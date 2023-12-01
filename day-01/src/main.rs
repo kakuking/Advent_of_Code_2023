@@ -28,6 +28,61 @@ fn find_last_number_char(s: &str) -> Option<char> {
     None
 }
 
+fn replace_num_words(s: &str) -> String {
+    let string_cpy = String::from(s);
+    let string_ver = string_cpy.clone();
+    let mut ret = string_cpy.into_bytes();
+
+    for (index, _) in string_ver.match_indices("one") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'1';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("two") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'2';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("three") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'3';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("four") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'4';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("five") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'5';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("six") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'6';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("seven") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'7';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("eight") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'8';  // Replace 'R' with 'W'
+        }
+    }
+    for (index, _) in string_ver.match_indices("nine") {
+        if let Some(byte) = ret.get_mut(index) {
+            *byte = b'9';  // Replace 'R' with 'W'
+        }
+    }
+
+    String::from_utf8(ret).expect("Invalid UTF-8")
+}
+
+
 fn main() {
     let filename = "input";
     let contents = read_input_file(filename);
@@ -35,12 +90,15 @@ fn main() {
 
     let mut sum: u32 = 0;
 
-    for line in lines.iter().take(5){
-        let first = match find_first_number_char(line) {
+    for line in lines.iter(){
+        let without_num = replace_num_words(line);
+        println!("{line} ------ {without_num}");
+
+        let first: u32 = match find_first_number_char(&without_num){
             Some(n) => n.to_digit(10u32).unwrap(),
             None => 0u32
         };
-        let last = match find_last_number_char(line) {
+        let last: u32 = match find_last_number_char(&without_num){
             Some(n) => n.to_digit(10u32).unwrap(),
             None => 0u32
         };

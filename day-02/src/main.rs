@@ -17,7 +17,7 @@ fn main() {
 
     let mut ret: u32 = 0;
 
-    'line: for (index, line) in lines.iter().enumerate() {
+    for (_, line) in lines.iter().enumerate() {
         let colon_parts: Vec<&str> = line.split(":").collect();
 
         let sets: Vec<&str> = colon_parts[1].split(";").collect();

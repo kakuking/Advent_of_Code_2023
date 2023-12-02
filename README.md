@@ -7,6 +7,7 @@ Each day is its own folder. Done in Rust as I am trying to learn it I hope I can
 **I have included the input files as well, to run the code of any day you can -**
 > cd .\day-xx\
 > cargo run
+
 **And the output of part 2 will be displayed**
 
 ## Day 01 - 

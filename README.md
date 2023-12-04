@@ -18,3 +18,10 @@ After that its a simple matter of iterating over string backwards and forwards, 
 ## Day 02 -
 A bunch of string splitting, and then just adding and making sure that red, green, and blue balls are all withing their parameters.
 Part 2 is just finding max red, blue, and green from each line and multiplying and adding.
+
+## Day 03 - 
+Took some time, overflowed into day 04. Had to brute force it in the end, find out what numbers are at each index and create a lookup_table. Proved handy in 
+solving part 2 as well.
+
+## Day 04 -
+Part 1 was fairly easy, it was just a series of string splits, and then checking if number is in the vector or not. Part 2 was a bit tricky to understand. But in the end implementation was fairly straightforward so it was not too tough

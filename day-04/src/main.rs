@@ -14,8 +14,78 @@ fn main() {
     let filename = "input";
     let contents = read_input_file(filename);
     let lines: Vec<&str> = contents.lines().collect();
+    let mut scratch_portion: Vec<&str> = vec![];
+
+    let mut winning_nums = vec![vec![]];
+    let mut elfing_nums = vec![vec![]];
 
     for line in lines{
-        println!("{line}");
+        let parts: Vec<&str> = line.split(':').collect();
+        if let Some(second_part) = parts.get(1) {
+            scratch_portion.push(*second_part);
+        }
     }
+    for line in scratch_portion {
+        let parts: Vec<&str> = line.split('|').collect();
+
+        let win: &str = if let Some(win_part) = parts.get(0) {
+            win_part
+        } else {
+            ""
+        };
+        let elf: &str = if let Some(elf_part) = parts.get(1) {
+            elf_part
+        } else {
+            ""
+        };
+
+        let num_wins: Vec<&str> = win.split(' ').collect();
+        let num_elf: Vec<&str> = elf.split(' ').collect();
+
+        let mut winning_t = vec![];
+        let mut elfing_t = vec![];
+
+        for t in num_wins {
+            match t.parse::<i32>() {
+                Ok(number) => {
+                    winning_t.push(number);
+                }
+                Err(_) => {}
+            };
+        }
+        
+        for t in num_elf {
+            match t.parse::<i32>() {
+                Ok(number) => {
+                    elfing_t.push(number);
+                }
+                Err(_) => {}
+            };
+        }
+
+        winning_nums.push(winning_t);
+        elfing_nums.push(elfing_t);
+    }
+
+    winning_nums.remove(0);
+    elfing_nums.remove(0);
+
+    let mut ret = 0;
+
+    for (idx, winning_t) in winning_nums.iter().enumerate() {
+        let elfing_t = elfing_nums.get(idx).unwrap();
+        let mut count = 0;
+        for elf_num in elfing_t{
+            if winning_t.contains(&elf_num) {
+                count += 1;
+            }
+        }
+        
+        // println!("{:?} -> {:?} =====> {count}", winning_t, elfing_t);
+        if count >= 1 {
+            ret += 1 << (count - 1);
+        }
+    }
+
+    println!("{ret}")
 }

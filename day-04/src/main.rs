@@ -19,6 +19,8 @@ fn main() {
     let mut winning_nums = vec![vec![]];
     let mut elfing_nums = vec![vec![]];
 
+    let num_lines = lines.len();
+
     for line in lines{
         let parts: Vec<&str> = line.split(':').collect();
         if let Some(second_part) = parts.get(1) {
@@ -70,22 +72,37 @@ fn main() {
     winning_nums.remove(0);
     elfing_nums.remove(0);
 
-    let mut ret = 0;
+    let mut num_of_wins: Vec<u32> = vec![];
 
     for (idx, winning_t) in winning_nums.iter().enumerate() {
         let elfing_t = elfing_nums.get(idx).unwrap();
         let mut count = 0;
         for elf_num in elfing_t{
-            if winning_t.contains(&elf_num) {
-                count += 1;
+            count += winning_t.iter().filter(|&&x| x == *elf_num).count() as u32;
+        }        
+        num_of_wins.push(count);
+    }
+
+    let mut each_scratch_car: Vec<u32> = vec![1; num_lines];
+
+    println!("HEYYY {}", each_scratch_car.len());
+
+    for (idx, win) in num_of_wins.iter().enumerate() {
+        for i in 1..=*win {
+            if idx + i as usize >= each_scratch_car.len() {
+                break;
             }
-        }
-        
-        // println!("{:?} -> {:?} =====> {count}", winning_t, elfing_t);
-        if count >= 1 {
-            ret += 1 << (count - 1);
+            each_scratch_car[idx + i as usize]+=1*each_scratch_car[idx];
         }
     }
 
-    println!("{ret}")
+    let mut ret = 0;
+
+    for (idx, num) in each_scratch_car.iter().enumerate() {
+        println!("{idx}:  num wins: {} ------ occurences: {}", num_of_wins[idx], num);
+        ret += num;
+    }
+
+    print!("{ret}")
+
 }

@@ -10,17 +10,6 @@ fn read_input_file(file_name: &str) -> String {
     fs::read_to_string(file_path).expect("Error reading file")
 }
 
-fn words_left(cur_words: &Vec<&str>) -> bool {
-    for word in cur_words {
-        if !word.ends_with('Z') {
-            // println!("{} ends without a Z", word);
-            return true;
-        }
-    }
-
-    false
-}
-
 fn for_one_word(word: &str, commands: &str, left: &HashMap<&str, &str>, right: &HashMap<&str, &str>) -> u64 {
     let mut i: u64 = 0;
     let mut cur_word = word;

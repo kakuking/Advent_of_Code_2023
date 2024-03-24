@@ -11,6 +11,32 @@ fn read_input_file(file_name: &str) -> String {
     fs::read_to_string(file_path).expect("Error reading file")
 }
 
+// True if 1st has higher value than second
+fn char_strength(
+    first: &char,
+    second: &char
+) -> bool {
+    let first_changed = match first {
+        'A' => 'Z',
+        'K' => 'Y',
+        'Q' => 'X',
+        'J' => 'W',
+        'T' => 'V',
+        _ => *first
+    };
+
+    let second_changed = match second {
+        'A' => 'Z',
+        'K' => 'Y',
+        'Q' => 'X',
+        'J' => 'W',
+        'T' => 'V',
+        _ => *second
+    };
+
+    first_changed > second_changed
+}
+
 fn hand_strength(
     hand: &str
 ) -> u64 {
@@ -25,9 +51,11 @@ fn hand_strength(
             if let Some(value) = card_number.get_mut(&card) {
                 *value += 1;
 
-                if *value > max_value {
-                    max_value = *value;
-                    max_char = card;
+                if *value >= max_value && card != 'J' {
+                    if char_strength(&card, &max_char) {
+                        max_value = *value;
+                        max_char = card;
+                    }
                 }
             }
         } else {
@@ -48,7 +76,7 @@ fn hand_strength(
     *value_max += value_J;
 
     if card_number.len() > 1 {
-        card_number.remove(&'J');
+        card_number.remove(&'0');
     }
 
     if card_number.len() == 5 {
@@ -159,20 +187,16 @@ fn main() {
                 current_rank += 1;
                 current_returns += current_rank * hand.1;
 
-                println!("{}. {} - {}", current_rank, hand.0, hand.1);
+                println!("{}. {} - {} - {}", current_rank, hand.0, hand.1, i);
             }
         }
     }
 
     
     // for (k, v) in strength_map {
-    //     println!("{k} - {:?}", v);
+    //     println!("{k} - {:?}\n\n", v);
     // }
     
     // println!("{}", current_rank);
     println!("{}", current_returns);
 }
-
-
-// Not 250996603
-// answer is 247815719

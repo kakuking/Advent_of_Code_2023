@@ -13,64 +13,110 @@ fn read_input_file(file_name: &str) -> String {
     fs::read_to_string(file_path).expect("Error reading file")
 }
 
-fn dfs(
+fn part_1(
     map: &Vec<Vec<char>>, 
-    prev_pos: (u32,u32), 
-    cur_pos: (u32,u32), 
-    visited: Vec<(u32,u32)>,
+    start: (u32, u32),
     compatible_to_the_left: &HashMap<char, Vec<char>>,
     compatible_to_the_right: &HashMap<char, Vec<char>>,
     compatible_to_the_top: &HashMap<char, Vec<char>>,
-    compatible_to_the_bottom: &HashMap<char, Vec<char>>
+    compatible_to_the_bottom: &HashMap<char, Vec<char>>,
+    level: u32
 ) -> i32 {
-    if visited.contains(&cur_pos) {
-        return -1;
-    }
 
-    let mut new_visited = visited.clone();
-    new_visited.push(cur_pos);
+    
 
+    // if level == 50 {
+    //     return 0;
+    // }
+
+    
     let mut top = 0;
     let mut bottom = 0;
     let mut left = 0;
     let mut right = 0;
 
-    let cur_char = map[cur_pos.0 as usize][cur_pos.1 as usize];
+    let mut length = 0;
     
-    // prev is not top
-    if cur_pos.0 > 0 && prev_pos != (cur_pos.0 - 1, cur_pos.1) {
-        let new_char = map[(cur_pos.0-1) as usize][cur_pos.1 as usize];
-        if compatible_to_the_top.get(&cur_char).unwrap().contains(&new_char) {
-            top = dfs(map, cur_pos, (cur_pos.0-1, cur_pos.1), new_visited.clone(),  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom);
+    let mut cur_char = map[start.0 as usize][start.1 as usize];
+    
+    // println!("{} - {}", level, cur_char);
+
+    let mut prev_pos = (0, 0);
+    let mut cur_pos = start.clone();
+    
+    while true {
+        if cur_pos == start && length > 0 {
+            break;
         }
+
+        cur_char = map[cur_pos.0 as usize][cur_pos.1 as usize];
+
+        println!("Currently - {:?} ;; Previously - {:?} ;; Started - {:?} ;; Length - {}", cur_pos, prev_pos, start, length);
+
+        // prev is not top
+        if cur_pos.0 > 0 && prev_pos != (cur_pos.0 - 1, cur_pos.1) {
+            let new_char = map[(cur_pos.0-1) as usize][cur_pos.1 as usize];
+            if compatible_to_the_top.get(&cur_char).unwrap().contains(&new_char) {
+                // println!("Top");
+                // top = dfs(map, cur_pos, (cur_pos.0-1, cur_pos.1), start,  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom, level + 1);
+                prev_pos = cur_pos;
+                cur_pos = (cur_pos.0 - 1, cur_pos.1);
+                length += 1;
+    
+                continue;
+            }
+        }
+    
+        // prev is not bottom
+        if cur_pos.0 < map.len() as u32 && prev_pos != (cur_pos.0 + 1, cur_pos.1) {
+            let new_char = map[(cur_pos.0+1) as usize][cur_pos.1 as usize];
+            if compatible_to_the_bottom.get(&cur_char).unwrap().contains(&new_char) {
+                // println!("Bottom");
+                // bottom = dfs(map, cur_pos, (cur_pos.0+1, cur_pos.1), start,  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom, level + 1);
+                prev_pos = cur_pos;
+                cur_pos = (cur_pos.0 + 1, cur_pos.1);
+                length += 1;
+    
+                // return bottom + 1;
+                continue;
+            }
+        }
+    
+        // prev is not left
+        if cur_pos.1 > 0 as u32 && prev_pos != (cur_pos.0, cur_pos.1 - 1) {
+            let new_char = map[cur_pos.0 as usize][(cur_pos.1 - 1) as usize];
+            if compatible_to_the_left.get(&cur_char).unwrap().contains(&new_char) {
+                // println!("Left");
+                // left = dfs(map, cur_pos, (cur_pos.0, cur_pos.1 - 1), start,  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom, level + 1);
+                prev_pos = cur_pos;
+                cur_pos = (cur_pos.0, cur_pos.1 - 1);
+                length += 1;
+
+                continue;
+                // return left + 1;
+            }
+        }
+    
+        // prev is not right
+        if cur_pos.1 < map[0].len() as u32 && prev_pos != (cur_pos.0, cur_pos.1 + 1) {
+            let new_char = map[cur_pos.0 as usize][(cur_pos.1 + 1) as usize];
+            if compatible_to_the_right.get(&cur_char).unwrap().contains(&new_char) {
+                // println!("Right");
+                // right = dfs(map, cur_pos, (cur_pos.0, cur_pos.1 + 1), start,  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom, level + 1);
+                prev_pos = cur_pos;
+                cur_pos = (cur_pos.0, cur_pos.1 + 1);
+                length += 1;
+    
+                continue;
+                // return right  + 1;
+            }
+        }
+
+        println!("NOthing compatible");
     }
 
-    // prev is not bottom
-    if cur_pos.0 < map.len() as u32 && prev_pos != (cur_pos.0 + 1, cur_pos.1) {
-        let new_char = map[(cur_pos.0+1) as usize][cur_pos.1 as usize];
-        if compatible_to_the_bottom.get(&cur_char).unwrap().contains(&new_char) {
-            bottom = dfs(map, cur_pos, (cur_pos.0+1, cur_pos.1), new_visited.clone(),  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom);
-        }
-    }
-
-    // prev is not left
-    if cur_pos.1 > 0 as u32 && prev_pos != (cur_pos.0, cur_pos.1 - 1) {
-        let new_char = map[cur_pos.0 as usize][(cur_pos.1 - 1) as usize];
-        if compatible_to_the_left.get(&cur_char).unwrap().contains(&new_char) {
-            left = dfs(map, cur_pos, (cur_pos.0, cur_pos.1 - 1), new_visited.clone(),  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom);
-        }
-    }
-
-    // prev is not right
-    if cur_pos.1 < map[0].len() as u32 && prev_pos != (cur_pos.0, cur_pos.1 + 1) {
-        let new_char = map[cur_pos.0 as usize][(cur_pos.1 + 1) as usize];
-        if compatible_to_the_right.get(&cur_char).unwrap().contains(&new_char) {
-            right = dfs(map, cur_pos, (cur_pos.0, cur_pos.1 + 1), new_visited.clone(),  compatible_to_the_left, compatible_to_the_right, compatible_to_the_top, compatible_to_the_bottom);
-        }
-    }
-
-
-    cmp::max(cmp::max(left, right), cmp::max(bottom, top))
+    return length
+    // cmp::max(cmp::max(left, right), cmp::max(bottom, top))
 }
 
 fn main() {
@@ -136,7 +182,16 @@ fn main() {
     }
 
     
+    let ret = part_1(
+        &map, 
+        (start_i as u32, start_j as u32), 
+        &compatible_to_the_left, 
+        &compatible_to_the_right, 
+        &compatible_to_the_top, 
+        &compatible_to_the_bottom,
+        0);
 
+    println!("{}", ret);
 
 
 }

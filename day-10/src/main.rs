@@ -1,7 +1,7 @@
 use std::env;
 use std::fs;
 
-use std::cmp;
+// use std::cmp;
 use std::collections::HashMap;
 
 fn read_input_file(file_name: &str) -> String {
@@ -24,7 +24,6 @@ fn part_1(
 ) -> i32 {
 
     
-
     // if level == 50 {
     //     return 0;
     // }
@@ -48,7 +47,6 @@ fn part_1(
         if cur_pos == start && length > 0 {
             break;
         }
-
         cur_char = map[cur_pos.0 as usize][cur_pos.1 as usize];
 
         println!("Currently - {:?} ;; Previously - {:?} ;; Started - {:?} ;; Length - {}", cur_pos, prev_pos, start, length);
@@ -114,7 +112,6 @@ fn part_1(
 
         println!("NOthing compatible");
     }
-
     return length
     // cmp::max(cmp::max(left, right), cmp::max(bottom, top))
 }
@@ -173,14 +170,13 @@ fn main() {
     for i in 0..map.len() {
         for j in 0..map[i].len() {
             if map[i][j] == 'S' {
-                start_i = i;
-                start_j = j;
+                start_i = i as u32;
+                start_j = j as u32;
 
                 map[i][j] = 'J';
             }
         }
     }
-
     
     let ret = part_1(
         &map, 
@@ -193,5 +189,9 @@ fn main() {
 
     println!("{}", ret);
 
+    // return;
+    
+    let ret = dfs(&map, (0,0), (start_i, start_j), Vec::new(), &compatible_to_the_left, &compatible_to_the_right, &compatible_to_the_top, &compatible_to_the_bottom, (start_i, start_j), 0);
 
+    println!("{}", ret)
 }

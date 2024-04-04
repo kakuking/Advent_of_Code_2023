@@ -28,7 +28,7 @@ fn write_to_file(data: &Vec<Vec<char>>) -> std::io::Result<()>{
     Ok(())
 }
 
-fn expand_universe(universe: &mut Vec<Vec<char>>, new_rows: &mut Vec<usize>, new_cols: &mut Vec<usize>) {
+fn expand_universe(universe: &mut Vec<Vec<char>>, new_rows: &mut Vec<usize>, new_cols: &mut Vec<usize>, to_adjust: bool) {
     // For rows - 
     let row_len = universe[0].len();
 
@@ -53,6 +53,10 @@ fn expand_universe(universe: &mut Vec<Vec<char>>, new_rows: &mut Vec<usize>, new
         }
         
         new_cols.push(col_idx);
+    }
+
+    if !to_adjust {
+        return;
     }
 
     let mut adjust = 0;
@@ -90,6 +94,39 @@ fn part_1(galaxies: Vec<(i32, i32)>){
 
     println!("{}", total_lengths);
 }
+
+fn part_2(galaxies: Vec<(i32, i32)>, new_rows: Vec<usize>, new_cols: Vec<usize>){
+    let mut total_lengths: i64 = 0;
+    for first_idx in 0..(galaxies.len()) {
+        for second_idx in (first_idx+1)..galaxies.len() {
+            let first = galaxies.get(first_idx).unwrap();
+            let second = galaxies.get(second_idx).unwrap();
+
+            let mut new_rows_between = 0;
+            let mut new_cols_between = 0;
+
+            for new_row in &new_rows {
+                let new_row = *new_row as i32;
+                if (first.0 - new_row) * (second.0 - new_row) < 0 {
+                    new_rows_between += 1;
+                }
+            }
+
+            for new_col in &new_cols {
+                let new_col = *new_col as i32;
+                if (first.1 - new_col) * (second.1 - new_col) < 0 {
+                    new_cols_between += 1;
+                }
+            }
+
+
+            total_lengths += ((first.0 - second.0).abs() + (first.1 - second.1).abs() + new_rows_between * 999999 + new_cols_between * 999999) as i64;
+        }
+    }
+
+    println!("{}", total_lengths);
+}
+
 fn main() {
     let filename = "input";
     let contents = read_input_file(filename);
@@ -104,9 +141,9 @@ fn main() {
     let mut new_rows: Vec<usize> = Vec::new();
     let mut new_cols: Vec<usize> = Vec::new();
     
-    expand_universe(&mut universe, &mut new_rows, &mut new_cols);
+    expand_universe(&mut universe, &mut new_rows, &mut new_cols, false);
 
-    write_to_file(&universe);
+    // write_to_file(&universe);
 
     let mut galaxies: Vec<(i32, i32)> = Vec::new();
 
@@ -120,7 +157,9 @@ fn main() {
         }
     }
 
-    part_1(galaxies);    
+    // part_1(galaxies);  
+
+    part_2(galaxies, new_rows, new_cols);
 
 }
 
